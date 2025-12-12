@@ -3,40 +3,268 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My GitHub Pages Site</title>
+  <title>Bookshelf</title>
   <style>
+    :root {
+      color-scheme: dark;
+    }
+    * {
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-      background-color: #f4f4f4;
-      color: #2c3e50;
-      display: flex;
       min-height: 100vh;
-      align-items: center;
+      font-family: "Noto Serif JP", "Segoe UI", serif;
+      background: #1b1b1f;
+      color: #f8f5ef;
+      display: flex;
+      align-items: stretch;
       justify-content: center;
+      padding: 2rem;
     }
     main {
+      width: min(1200px, 100%);
+      background: radial-gradient(circle at 20% 20%, rgba(255, 214, 179, 0.15), transparent 55%),
+                  linear-gradient(135deg, #0f0f12, #14141a 60%, #1c1c23 100%);
+      border-radius: 32px;
+      padding: 2.5rem;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 212, 158, 0.08) inset;
+      position: relative;
+      overflow: hidden;
+    }
+    main::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 40px);
+      opacity: 0.6;
+      mix-blend-mode: lighten;
+      pointer-events: none;
+    }
+    header {
+      position: relative;
+      z-index: 1;
       text-align: center;
-      padding: 2rem;
-      max-width: 640px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
     }
     h1 {
-      margin-bottom: 0.5rem;
-      font-size: 2rem;
+      margin: 0;
+      font-size: clamp(2.2rem, 3vw, 3.2rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
     }
     p {
-      margin-top: 0;
+      margin: 0.5rem auto 0;
+      max-width: 600px;
+      line-height: 1.6;
+      color: rgba(248, 245, 239, 0.85);
+    }
+    .bookshelf {
+      position: relative;
+      padding: 1rem 1.5rem 2rem;
+      border-radius: 28px;
+      background: linear-gradient(180deg, #2c1a0c, #1b0f05 65%);
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+      z-index: 1;
+    }
+    .shelf {
+      margin: 1.5rem 0;
+      height: 160px;
+      border-top: 8px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 12px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.4));
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      gap: 0.75rem;
+      padding: 0 0.75rem;
+      overflow: hidden;
+    }
+    .shelf::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 25%);
+    }
+    .book {
+      width: clamp(24px, 1.6vw, 40px);
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.05));
+      position: relative;
+      flex-shrink: 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+    }
+    .book::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .book::after {
+      content: attr(data-spine);
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.65);
+      writing-mode: vertical-rl;
+    }
+    .book[data-color="amber"] {
+      background: linear-gradient(180deg, #f6c26b, #b76b25);
+    }
+    .book[data-color="jade"] {
+      background: linear-gradient(180deg, #9ad7c0, #3c6b4a);
+    }
+    .book[data-color="ruby"] {
+      background: linear-gradient(180deg, #f45d84, #a32946);
+    }
+    .book[data-color="midnight"] {
+      background: linear-gradient(180deg, #222f45, #04070d);
+    }
+    .book[data-color="sienna"] {
+      background: linear-gradient(180deg, #be6b30, #551f0a);
+    }
+    .book[data-color="indigo"] {
+      background: linear-gradient(180deg, #6d7ffc, #1f256d);
+    }
+    .book[data-color="sage"] {
+      background: linear-gradient(180deg, #cad2c5, #406c4f);
+    }
+    .book[data-color="rose"] {
+      background: linear-gradient(180deg, #f3adb4, #8f4253);
+    }
+    .book[data-color="pearl"] {
+      background: linear-gradient(180deg, #f8f7fb, #c2c1c9);
+    }
+    .book span {
+      display: block;
+      position: absolute;
+      bottom: 12px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.45rem;
+      letter-spacing: 0.3em;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .book-tall {
+      height: 150px;
+    }
+    .book-wide {
+      min-width: 48px;
+    }
+    .floating-book {
+      position: fixed;
+      margin: 0;
+      left: 0;
+      top: 0;
+      z-index: 15;
+      pointer-events: auto;
+      transition: left 0.9s ease, top 0.9s ease, width 0.9s ease, height 0.9s ease, transform 0.9s ease, opacity 0.4s ease;
+      transform-origin: center top;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);
+      cursor: pointer;
+    }
+    .floating-book::after {
+      content: "";
+      position: absolute;
+      inset: 12px 6px 6px;
+      border-radius: 2px;
+      border: 1px dashed rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .floating-book .book-pages {
+      position: absolute;
+      inset: 12px 10px 10px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.97), rgba(236, 230, 210, 0.95));
+      box-shadow: inset 0 10px 15px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: rotateX(90deg);
+      transform-origin: top;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      padding: 1.25rem;
+      overflow: hidden;
+    }
+    .floating-book.floating-stage {
+      transform: scale(1.04) rotateX(6deg);
+    }
+    .floating-book.opened {
+      transform: scale(1.1) rotateX(8deg);
+    }
+    .floating-book.opened::after {
+      opacity: 1;
+    }
+    .floating-book.opened .book-pages {
+      opacity: 1;
+      transform: rotateX(0deg);
+    }
+    .book-pages p {
+      margin: 0;
+      font-size: 0.9rem;
       line-height: 1.5;
+      color: #1c120a;
+      text-align: left;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 1rem;
+      }
+      .shelf {
+        height: 120px;
+      }
+      .bookshelf {
+        padding: 1rem 1rem 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
   <main>
-    <h1>ようこそ</h1>
-    <p>これはGitHub Pagesで公開するシンプルなプロフィールサイトです。必要に応じて自由にカスタマイズしてください。</p>
+    <header>
+      <h1>Bibliothèque</h1>
+      <p>深い夜を照らすランプの温もりと、たくさんの本が詰まった大きな本棚を眺めて心を整えよう。</p>
+    </header>
+    <section class="bookshelf" aria-label="いっぱいに本が詰まった本棚">
+      <div class="shelf">
+        <div class="book book-tall" data-color="amber" data-spine="変身" data-open="ある朝、グレゴール・ザムザが気がかりな夢から目ざめたとき、自分がベッドの上で一匹の巨大な毒虫に変ってしまっているのに気づいた。"></div>
+        <div class="book book-tall" data-color="ruby" data-spine="枕草子" data-open="春は、あけぼの。やうやう白くなりゆく山ぎは、少し明りて、紫だちたる雲の細くたなびきたる。"></div>
+        <div class="book" data-color="midnight" data-spine="Art" data-open="キャンバスから湧き出る光と影を追いかける静かな夜。"></div>
+        <div class="book book-wide" data-color="indigo" data-spine="Music" data-open="旋律が木の壁を揺らし、空気まで柔らかく染めていく。"></div>
+        <div class="book" data-color="sage" data-spine="Travel" data-open="未知の通りを歩くたび、舗道の匂いがページの役割を果たす。"></div>
+        <div class="book" data-color="rose" data-spine="Design" data-open="細い筆致がクラフト紙に未来の形を描き出す。"></div>
+        <div class="book book-tall" data-color="sienna" data-spine="History" data-open="古い日記の隅に残るインクは、時代を語る証となる。"></div>
+        <div class="book" data-color="jade" data-spine="Science" data-open="未知の数式が蒸気の向こうに漂う光を切り裂く。"></div>
+        <div class="book" data-color="pearl" data-spine="Poetry" data-open="一行が熱を帯び、心の奥でやわらかな灯りになる。"></div>
+      </div>
+      <div class="shelf">
+        <div class="book book-tall" data-color="midnight" data-spine="Philosophy" data-open="理性が炎を操るように、言葉が問いに火を灯す。"></div>
+        <div class="book" data-color="amber" data-spine="Ecology" data-open="根と枝のあいだで、微かな音が世界のバランスを囁く。"></div>
+        <div class="book book-wide" data-color="jade" data-spine="Nature" data-open="風に泳ぐ葉脈は、知られざる物語を指差している。"></div>
+        <div class="book" data-color="ruby" data-spine="Cinema" data-open="サイレントの明かりが、暗幕の向こうに人々を集める。"></div>
+        <div class="book" data-color="sienna" data-spine="Urban" data-open="建物の谷間でこぼれる音が、街のリズムを教える。"></div>
+        <div class="book" data-color="indigo" data-spine="Grammar" data-open="ルールを紡ぎ、思考がまっすぐ進む道筋を整える。"></div>
+        <div class="book" data-color="rose" data-spine="Horizon" data-open="地平線に向けて思考を伸ばすと、新たな色が溶け出す。"></div>
+        <div class="book" data-color="pearl" data-spine="Noise" data-open="ざわめきが静寂に溶け、耳鳴りが言葉のように聞こえる。"></div>
+      </div>
+      <div class="shelf">
+        <div class="book" data-color="sage" data-spine="Myth" data-open="伝説の黄昏が、生きた証を巻き込んで歌い出す。"></div>
+        <div class="book book-tall" data-color="amber" data-spine="Biology" data-open="細胞の棘が一つずつ、生命の迷路を照らしていく。"></div>
+        <div class="book" data-color="indigo" data-spine="Poetry" data-open="吐息が連なるたび、韻が朝焼けを引き伸ばす。"></div>
+        <div class="book" data-color="rose" data-spine="Ritual" data-open="儀式のリズムが小さな指を踊らせる。"></div>
+        <div class="book book-tall" data-color="ruby" data-spine="Herbal" data-open="草葉の香りが本を開くたびに広がっていく。"></div>
+        <div class="book" data-color="midnight" data-spine="Geography" data-open="地図のしわが旅の記憶を刻み込む。"></div>
+        <div class="book" data-color="pearl" data-spine="Guide" data-open="案内の指先でページが静かにめくられていく。"></div>
+        <div class="book" data-color="sienna" data-spine="Town" data-open="小道の先で笑い声が本の隅に落ちる。"></div>
+      </div>
+    </section>
   </main>
+  <script src="bookshelf.js" defer></script>
 </body>
 </html>
